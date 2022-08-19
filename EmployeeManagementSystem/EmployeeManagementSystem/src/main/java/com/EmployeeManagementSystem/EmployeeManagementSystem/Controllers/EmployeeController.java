@@ -27,7 +27,7 @@ public class EmployeeController {
             if(String.valueOf(employees.getEmployeePhoneNumber()).length()==10){
                 if(!employees.getEmployeeSalary().contains("-")){
                     if(employees.getPassword().length()<=8){
-                        if(!employees.getEmail().contains("@")&&!employees.getEmail().contains(".com")) {
+                        if(employees.getEmail().contains("@")&&employees.getEmail().contains(".com")) {
                             Employees emp = employeeService.saveEmployee(employees);
                             if (emp == null) {
                                 return new ResponseEntity<>("Employee Already Exist", HttpStatus.BAD_REQUEST);
