@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -31,10 +32,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/api/organization/**").hasAnyAuthority("admin","Hr")
                 .antMatchers(HttpMethod.DELETE,"/api/organization/**").hasAnyAuthority("admin")
 
-                .antMatchers(HttpMethod.GET,"/api/employee/login/**").hasAnyAuthority("Employee","admin","Hr")
+//                .antMatchers(HttpMethod.GET,"/api/employee/login/**").hasAnyAuthority("Employee","admin","Hr")
+                .antMatchers(HttpMethod.GET, "/api/employee/login/{id}").access("@userSecurity.hasUserId(authentication,#id)")
                 .antMatchers(HttpMethod.GET,"/api/employee").hasAnyAuthority("admin","Hr")
                 .antMatchers(HttpMethod.POST,"/api/employee/**").hasAnyAuthority("admin","Hr")
-                .antMatchers(HttpMethod.PUT,"/api/employee").hasAnyAuthority("admin","Hr")
+                .antMatchers(HttpMethod.PUT,"/api/employee/**").hasAnyAuthority("admin","Hr")
                 .antMatchers(HttpMethod.DELETE,"/api/employee/**").hasAnyAuthority("admin")
 
                 .antMatchers(HttpMethod.GET,"/api/assets").hasAnyAuthority("admin","Employee","Hr")

@@ -3,6 +3,7 @@ package com.EmployeeManagementSystem.EmployeeManagementSystem.Models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.*;
 
 @Data
 @Entity
@@ -19,4 +20,9 @@ public class Organizations {
     private long organizationPhoneNumber;
     @Column(nullable = false)
     private String organizationEmail;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval=true ,fetch = FetchType.EAGER)
+    private Set<Employees> Employee=new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval=true ,fetch = FetchType.EAGER)
+    private Set<Assets> Assets =new HashSet<>();
 }

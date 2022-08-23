@@ -24,11 +24,14 @@ public class AssetsController {
 //        return new ResponseEntity<Assets>(assetService.saveAsset(assets), HttpStatus.CREATED);
 //    }
     @PostMapping
-    public ResponseEntity<String> saveAssets(@RequestBody Assets assets)
-    {
+    public ResponseEntity<String> saveAssets(@RequestBody Assets assets) {
         if (assets.getAssetName().length()>0&&String.valueOf(assets.getAssetCurrentPrice()).length()>0&&String.valueOf(assets.getAssetPurchasedPrice()).length()>0){
-            Assets ass = assetService.saveAsset(assets);
-            return new ResponseEntity<>("Created Assets",HttpStatus.CREATED);
+            if(!String.valueOf(assets.getAssetCurrentPrice()).contains("-") && String.valueOf(assets.getAssetPurchasedPrice()).contains("-")) {
+                Assets ass = assetService.saveAsset(assets);
+                return new ResponseEntity<>("Created Assets", HttpStatus.CREATED);
+            }else {
+                return new ResponseEntity<>("Invalid Data -ve value.",HttpStatus.BAD_REQUEST);
+            }
         }
         else {
             return new ResponseEntity<>("Invalid Data",HttpStatus.BAD_REQUEST);
@@ -39,10 +42,10 @@ public class AssetsController {
     {
         return assetService.getAllAssets();
     }
-    @GetMapping("{assetId}")
-    public ResponseEntity<Assets> getAssetsById(@PathVariable("employeeId")int employeeId)
+    @GetMapping("/{assetId}")
+    public ResponseEntity<Assets> getAssetsById(@PathVariable("assetId")int assetId)
     {
-        return new ResponseEntity<Assets>(assetService.getAssetsById(employeeId), HttpStatus.OK);
+        return new ResponseEntity<Assets>(assetService.getAssetsById(assetId), HttpStatus.OK);
     }
     @PutMapping("{assetId}")
     public ResponseEntity<String> updateAssets(@PathVariable("assetId")int assetId,@RequestBody Assets assets)
