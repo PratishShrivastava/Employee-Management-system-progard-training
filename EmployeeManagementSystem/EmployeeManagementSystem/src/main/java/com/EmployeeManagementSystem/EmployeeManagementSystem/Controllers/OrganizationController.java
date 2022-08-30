@@ -46,20 +46,35 @@ public ResponseEntity<String> saveOrganization(@RequestBody Organizations organi
 
 
     @GetMapping
-    public List<Organizations> getAllOrganizations()
+    public ResponseEntity<List<Organizations>> getAllOrganizations()
     {
-        return organizationService.getAllOrganization();
+        List<Organizations> organizations = organizationService.getAllOrganization();
+        if(organizations.size() > 0){
+            return new ResponseEntity<>(organizations, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
     @GetMapping("/{organizationRegistrationNumber}")
     public ResponseEntity<Organizations> getOrganizationsById(@PathVariable("organizationRegistrationNumber")int organizationRegistrationNumber)
     {
-        return new ResponseEntity<Organizations>(organizationService.getOrganizationById(organizationRegistrationNumber), HttpStatus.OK);
+        try{
+            return new ResponseEntity<Organizations>(organizationService.getOrganizationById(organizationRegistrationNumber), HttpStatus.OK);
+        }catch (NoSuchElementException e){
+            return new ResponseEntity<Organizations>(HttpStatus.NOT_FOUND);
+        }
+
     }
     @PutMapping("{organizationRegistrationNumber}")
     public ResponseEntity<String> updateOrganizations(@PathVariable("organizationRegistrationNumber")int organizationRegistrationNumber,@RequestBody Organizations organizations)
     {
-        organizationService.updateOrganization(organizations,organizationRegistrationNumber);
-        return new ResponseEntity<String>("Updated Organization", HttpStatus.OK);
+        try {
+            organizationService.updateOrganization(organizations, organizationRegistrationNumber);
+            return new ResponseEntity<String>("Updated Organization", HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<String>("Organisation's details not found", HttpStatus.NOT_FOUND);
+        }
     }
     @DeleteMapping("{organizationRegistrationNumber}")
     public ResponseEntity<String> deleteBooks(@PathVariable("organizationRegistrationNumber")int organizationRegistrationNumber)
