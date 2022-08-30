@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/assets")
@@ -38,20 +39,37 @@ public class AssetsController {
         }
     }
     @GetMapping
-    public List<Assets> getAllAssets()
+    public ResponseEntity<List<Assets>> getAllAssets()
     {
-        return assetService.getAllAssets();
+        List<Assets> assets = assetService.getAllAssets();
+        if(assets.size()>0){
+            return new ResponseEntity<>(assets,HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @GetMapping("/{assetId}")
     public ResponseEntity<Assets> getAssetsById(@PathVariable("assetId")int assetId)
     {
-        return new ResponseEntity<Assets>(assetService.getAssetsById(assetId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<Assets>(assetService.getAssetsById(assetId), HttpStatus.OK);
+        }catch (NoSuchElementException e){
+            return new ResponseEntity<Assets>(HttpStatus.NOT_FOUND);
+        }
     }
     @PutMapping("{assetId}")
     public ResponseEntity<String> updateAssets(@PathVariable("assetId")int assetId,@RequestBody Assets assets)
     {
-        assetService.updateAssets(assets, assetId);
-        return new ResponseEntity<String>("Updated Assets", HttpStatus.OK);
+        try {
+            if(!String.valueOf(assets.getAssetCurrentPrice()).contains("-") && String.valueOf(assets.getAssetPurchasedPrice()).contains("-")) {
+                assetService.updateAssets(assets, assetId);
+                return new ResponseEntity<String>("Updated Assets", HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>("Invalid Data -ve value.",HttpStatus.BAD_REQUEST);
+            }
+        }catch (NoSuchElementException e){
+            return new ResponseEntity<String>("Assets details not found", HttpStatus.NOT_FOUND);
+        }
     }
     @DeleteMapping("{assetId}")
     public ResponseEntity<String> deleteAssets(@PathVariable("assetId")int assetId)
