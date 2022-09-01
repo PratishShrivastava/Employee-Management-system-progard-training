@@ -26,12 +26,12 @@ public class AssetsController {
 //    }
     @PostMapping
     public ResponseEntity<String> saveAssets(@RequestBody Assets assets) {
-        if (assets.getAssetName().length()>0&&String.valueOf(assets.getAssetCurrentPrice()).length()>0&&String.valueOf(assets.getAssetPurchasedPrice()).length()>0){
-            if(!String.valueOf(assets.getAssetCurrentPrice()).contains("-") && String.valueOf(assets.getAssetPurchasedPrice()).contains("-")) {
+        if (assets.getAssetName().length()>0 && String.valueOf(assets.getAssetCurrentPrice()).length()-1>0&&String.valueOf(assets.getAssetPurchasedPrice()).length()-1>0){
+            if(String.valueOf(assets.getAssetCurrentPrice()).contains("-") || String.valueOf(assets.getAssetPurchasedPrice()).contains("-")) {
+                return new ResponseEntity<>("Invalid Data -ve value.",HttpStatus.BAD_REQUEST);
+            }else {
                 Assets ass = assetService.saveAsset(assets);
                 return new ResponseEntity<>("Created Assets", HttpStatus.CREATED);
-            }else {
-                return new ResponseEntity<>("Invalid Data -ve value.",HttpStatus.BAD_REQUEST);
             }
         }
         else {
