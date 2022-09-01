@@ -22,8 +22,11 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employees> saveEmployee(@RequestBody @Valid Employees employees) {
-        return new ResponseEntity<Employees>(employeeService.saveEmployee(employees),HttpStatus.CREATED);
+    public ResponseEntity<String> saveEmployee(@RequestBody @Valid Employees employees) {
+        if(employeeService.saveEmployee(employees))
+            return new ResponseEntity<String>("Created", HttpStatus.CREATED);
+        else
+            return new ResponseEntity<String>("email Exists", HttpStatus.BAD_REQUEST);
     }
     @GetMapping
     public List<Employees> getAllEmployees()

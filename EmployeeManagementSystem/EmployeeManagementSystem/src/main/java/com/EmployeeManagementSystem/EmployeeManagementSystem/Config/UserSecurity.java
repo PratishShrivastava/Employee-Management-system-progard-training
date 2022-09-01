@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component("userSecurity")
 public class UserSecurity {
-
     @Autowired
     EmployeeRepo userRepo;
 

@@ -22,7 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employees saveEmployee(Employees employees) {
+    public boolean saveEmployee(Employees employees) {
         List<Employees> emp = employeeRepo.findAll();
         boolean isFound = false;
         for (Employees e : emp) {
@@ -33,11 +33,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         if (isFound) {
-            return null;
+            return false;
         } else {
             String encodepass = this.passwordEncoder.encode(employees.getPassword());
             employees.setPassword(encodepass);
-            return employeeRepo.save(employees);
+            employeeRepo.save(employees);
+            return true;
         }
 
     }
